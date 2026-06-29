@@ -1,11 +1,13 @@
 from django.http import Http404
 from django.shortcuts import render
+from django.http import HttpResponse
 
-# Create your views here.
+# 1. Ensure the index view is completely restored
 def index(request):
     user = request.user
     return render(request, 'home/index.html', {'user': user})
 
+# 2. Keep the original cards view
 def cards(request):
     return render(request, 'home/index.html')
 
