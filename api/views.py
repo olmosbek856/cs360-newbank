@@ -11,6 +11,9 @@ from decimal import Decimal
 from accounts.models import Account
 from django.utils import timezone
 import rest_framework.status
+# -------------------------------------------------------------------------
+from rest_framework.status import Response as StatusResponse 
+# -------------------------------------------------------------------------
 
 # Create your views here.
 def register(request):
@@ -34,6 +37,26 @@ def booking(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+@api_view(['GET', 'POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def booking2(request):
+    if request.method == 'GET':
+        bookings = Booking.objects.filter(booked_by=request.user)
+        serializer = BookingSerializer(bookings, many=True)
+        return Response(serializer.data)
+    if request.method == 'POST':
+        serializer = BookingSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(booked_by=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+# -------------------------------------------------------------------------
+
+
 
 @api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
