@@ -11,16 +11,27 @@ def index(request):
 def cards(request):
     return render(request, 'home/index.html')
 
-def card_detail(request, card_type):
+def card_detail(request, card_name):
     # Ruxsat etilgan kartalar ro'yxati
     VALID_CARD_TYPES = ['Visa', 'MasterCard', 'Humo', 'Uzcard']
     
     # Kiritilgan qiymatni ro'yxatdagilar bilan solishtirish (registrni hisobga olmaslik ham mumkin, masalan .title() bilan)
     # Biz aniq moslikni tekshiramiz:
-    if card_type not in VALID_CARD_TYPES:
+    if card_name not in VALID_CARD_TYPES:
         raise Http404("Bunday turdagi karta mavjud emas!")
 
     context = {
-        'card_name': card_type,
+        'card_name': card_name,
     }
     return render(request, 'home/card_detail.html', context)
+
+
+def currency_view(request):
+    # Valyuta ma'lumotlarini olish (bu yerda faqat misol uchun)
+    currency_data = {
+        'USD': 1.0,
+        'EUR': 0.85,
+        'GBP': 0.75,
+        'JPY': 110.0,
+    }
+    return render(request, 'home/currency.html', {'currency_data': currency_data})
